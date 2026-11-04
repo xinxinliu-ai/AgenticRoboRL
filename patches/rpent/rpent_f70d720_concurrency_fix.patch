@@ -1,0 +1,48 @@
+diff --git a/rpent/planner/api_loop.py b/rpent/planner/api_loop.py
+index 20ae484..4f50af2 100644
+--- a/rpent/planner/api_loop.py
++++ b/rpent/planner/api_loop.py
+@@ -719,13 +719,16 @@ def _api_error_text(error: Exception, *, no_images: bool) -> str:
+ def _build_tools(toolkit: Toolkit, *, no_images: bool = False) -> list[Tool]:
+     """Build the API-only image reader plus pydantic-ai toolkit wrappers."""
+     image_reader = _make_image_reader(toolkit.state, no_images=no_images)
+-    tools: list[Tool] = [Tool(image_reader, name="read_image")]
++    # sequential=True serializes a turn's tool calls so the toolkit's
++    # single-operation lock never rejects an overlapping call.
++    tools: list[Tool] = [Tool(image_reader, name="read_image", sequential=True)]
+     for spec in toolkit.get_tools_spec():
+         name = spec["name"]
+         tools.append(
+             Tool.from_schema(
+                 function=_make_tool_function(toolkit, name, no_images=no_images),
+                 name=name,
++                sequential=True,
+                 description=spec.get("description", ""),
+                 json_schema=spec.get("input_schema")
+                 or {"type": "object", "properties": {}},
+diff --git a/rpent/planner/utils/http_mcp_server.py b/rpent/planner/utils/http_mcp_server.py
+index 2102503..11af317 100644
+--- a/rpent/planner/utils/http_mcp_server.py
++++ b/rpent/planner/utils/http_mcp_server.py
+@@ -89,6 +89,7 @@ def _strip_mcp_prefix(name: str) -> str:
+ def _build_asgi_app(toolkit: Toolkit) -> Any:
+     """Build a raw ASGI3 app wrapping an MCP ``Server`` + streamable HTTP."""
+     mcp_app: Server = Server(SERVER_NAME, version="0.1.0")
++    tool_execution_lock = asyncio.Lock()
+ 
+     @mcp_app.list_tools()
+     async def _list_tools() -> list[types.Tool]:
+@@ -106,9 +107,10 @@ def _build_asgi_app(toolkit: Toolkit) -> Any:
+     @mcp_app.call_tool()
+     async def _call_tool(name: str, arguments: dict[str, Any]) -> types.CallToolResult:
+         lookup = _strip_mcp_prefix(name)
+-        tr = await asyncio.get_running_loop().run_in_executor(
+-            None, toolkit.execute_tool, lookup, arguments or {}
+-        )
++        async with tool_execution_lock:
++            tr = await asyncio.get_running_loop().run_in_executor(
++                None, toolkit.execute_tool, lookup, arguments or {}
++            )
+         content, is_error = _toolkit_to_mcp_content(tr)
+         return types.CallToolResult(content=content, isError=is_error)
+ 
