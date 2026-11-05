@@ -133,7 +133,7 @@ tests/                             no GPU, simulator or network needed
 
 | Variable | Harness | Meaning |
 |---|---|---|
-| `RPENT_DIR` | RPent | an RPent checkout at `f70d720` with `patches/rpent/rpent_f70d720.patch` applied |
+| `RPENT_DIR` | RPent | an RPent checkout at `f70d720` with the patches in `patches/rpent/` applied (see below) |
 | `RPENT_ENV` | RPent | RPent's Python environment (with LIBERO-PRO) |
 | `PI05_CHECKPOINT` | RPent | the frozen VLA (RLinf-Pi05-LIBERO-130-fullshot-SFT) |
 | `SAM3_CHECKPOINT` | RPent | `sam3.pt` |
@@ -144,7 +144,15 @@ tests/                             no GPU, simulator or network needed
 
 ### RPent
 
-1. Clone RPent, check out `f70d720`, and apply `patches/rpent/rpent_f70d720.patch` (see `patches/rpent/README.md`).
+1. Clone RPent and check out `f70d720`, then apply the patches in `patches/rpent/` (see
+   `patches/rpent/README.md` for the commands and the checksums):
+   - **New experiments (recommended):** apply `rpent_f70d720.patch` **and**
+     `rpent_f70d720_concurrency_fix.patch`. The second one backports an upstream bug fix
+     ([RLinf/RPent#150](https://github.com/RLinf/RPent/pull/150)) without which a turn that issues
+     several tool calls at once loses all but one of them, and the planner spends extra turns
+     recovering.
+   - **Reproducing the paper:** apply `rpent_f70d720.patch` only. Every number in the paper was
+     produced without the concurrency fix, so results with it applied will not match exactly.
 2. Set `RPENT_DIR`, `RPENT_ENV`, `PLANNER_ENV`, `TRAIN_ENV`, `PI05_CHECKPOINT` and `SAM3_CHECKPOINT` as described at the
    top of `harnesses/rpent_libero/harness.yaml`.
 

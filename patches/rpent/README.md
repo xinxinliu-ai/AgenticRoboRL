@@ -23,7 +23,7 @@ That recording is not part of this patch.
 
 sha256 of `rpent_f70d720.patch`: `74380a09251aa42f516457b1f410415d7d7cd1aee84d661886c164e18b0860b7`
 
-## Optional: concurrency fix (upstream PR #150 backport)
+## Recommended for new experiments: concurrency fix (upstream PR #150 backport)
 
 RPent at `f70d720` rejects overlapping tool calls: when the planner issues several tool calls in one
 turn, the toolkit's single-operation lock fails all but one of them with `another tool operation is
@@ -33,7 +33,7 @@ calls at the caller side. `rpent_f70d720_concurrency_fix.patch` backports that f
 (2 files, +9 / -4 lines; the source changes are line-identical to the upstream fix, only the
 insertion point of one keyword argument differs so the patch applies cleanly here).
 
-Apply it (optionally) on bare `f70d720`, or on top of `rpent_f70d720.patch`:
+Apply it on bare `f70d720`, or on top of `rpent_f70d720.patch`:
 
 ```bash
 git apply /path/to/AgenticRoboRL/patches/rpent/rpent_f70d720_concurrency_fix.patch
