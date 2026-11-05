@@ -113,7 +113,8 @@ teacher_rewrite/                   removing references to teacher-only memory fr
 harnesses/
   minimal/                         a toy harness with a fake model server and trainer: the whole loop on a laptop
   rpent_libero/  capx_libero/      the two harnesses of the paper
-patches/rpent/                     our changes to RPent (planner switches, the `proven` knowledge profile, verdict fields)
+patches/rpent/                     our changes to RPent (planner switches, `proven` profile, verdict fields), and a
+                                   backport of the upstream concurrency fix
 assets/                            images used by this README
 tests/                             no GPU, simulator or network needed
 ```
@@ -149,10 +150,11 @@ tests/                             no GPU, simulator or network needed
    - **New experiments (recommended):** apply `rpent_f70d720.patch` **and**
      `rpent_f70d720_concurrency_fix.patch`. The second one backports an upstream bug fix
      ([RLinf/RPent#150](https://github.com/RLinf/RPent/pull/150)) without which a turn that issues
-     several tool calls at once loses all but one of them, and the planner spends extra turns
-     recovering.
-   - **Reproducing the paper:** apply `rpent_f70d720.patch` only. Every number in the paper was
-     produced without the concurrency fix, so results with it applied will not match exactly.
+     several tool calls at once has all but one of them rejected with `another tool operation is
+     still active`, and the planner spends extra turns recovering.
+   - **Reproducing the paper:** apply `rpent_f70d720.patch` only. This is the setup every number in
+     the paper was produced with; the concurrency fix changes the planner's trajectories, so runs
+     with it applied are not directly comparable to the paper's numbers.
 2. Set `RPENT_DIR`, `RPENT_ENV`, `PLANNER_ENV`, `TRAIN_ENV`, `PI05_CHECKPOINT` and `SAM3_CHECKPOINT` as described at the
    top of `harnesses/rpent_libero/harness.yaml`.
 

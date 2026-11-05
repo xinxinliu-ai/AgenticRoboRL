@@ -1,7 +1,7 @@
 # RPent (the VLA-calling harness of Harness VLA) on LIBERO-PRO, with the settings of the paper's runs.
 #
 # Needs, in the environment of the controller (see Prerequisites in README.md):
-#   RPENT_DIR        an RPent checkout at f70d720 with patches/rpent/rpent_f70d720.patch applied
+#   RPENT_DIR        an RPent checkout at f70d720 with the patches in patches/rpent/ applied (see README.md)
 #   RPENT_ENV        RPent's Python environment (with LIBERO-PRO)
 #   PLANNER_ENV      an environment with vLLM 0.28
 #   TRAIN_ENV        the environment of rl/train_rl.py

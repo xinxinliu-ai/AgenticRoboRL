@@ -33,10 +33,15 @@ calls at the caller side. `rpent_f70d720_concurrency_fix.patch` backports that f
 (2 files, +9 / -4 lines; the source changes are line-identical to the upstream fix, only the
 insertion point of one keyword argument differs so the patch applies cleanly here).
 
-Apply it on bare `f70d720`, or on top of `rpent_f70d720.patch`:
+It applies on bare `f70d720` as well as on top of `rpent_f70d720.patch`, in either order. Both
+patches together — the setup recommended for new experiments:
 
 ```bash
+git clone https://github.com/RLinf/RPent.git && cd RPent
+git checkout f70d720
+git apply /path/to/AgenticRoboRL/patches/rpent/rpent_f70d720.patch
 git apply /path/to/AgenticRoboRL/patches/rpent/rpent_f70d720_concurrency_fix.patch
+git add -A && git write-tree        # c2cc16ec990cbacc506220b58ef5c7212d70e787
 ```
 
 **Note on reproducibility:** every number in the paper (evaluations and RL training) was produced
