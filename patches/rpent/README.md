@@ -1,7 +1,7 @@
 # Changes to RPent
 
 `rpent_f70d720.patch` applies to RPent at commit `f70d720` and gives the RPent code all evaluations of the paper used
-(8 files, +303 / -9 lines). The planner's tools and RPent's control loop are not changed.
+(8 files, +303 / -9 lines). This patch does not change the planner's tools or RPent's control loop.
 
 ```bash
 git clone https://github.com/RLinf/RPent.git && cd RPent
@@ -46,7 +46,7 @@ git add -A && git write-tree        # c2cc16ec990cbacc506220b58ef5c7212d70e787
 
 **Note on reproducibility:** every number in the paper (evaluations and RL training) was produced
 WITHOUT this fix, i.e. with the concurrency bug present — the planner's recovery turns after a
-rejected call are part of the recorded trajectories. To reproduce the paper exactly, do not apply
-this patch. To run new experiments without the spurious failures, apply it.
+rejected call are part of the recorded trajectories. To use the setup those numbers were produced
+with, do not apply this patch. To run new experiments without the spurious failures, apply it.
 
 sha256 of `rpent_f70d720_concurrency_fix.patch`: `5b81f9e8acb5ce18ec76513eb97dbb35269499be1cba70aa1c909cd8b614a97e`

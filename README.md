@@ -153,7 +153,7 @@ tests/                             no GPU, simulator or network needed
      several tool calls at once has all but one of them rejected with `another tool operation is
      still active`, and the planner spends extra turns recovering.
    - **Reproducing the paper:** apply `rpent_f70d720.patch` only. This is the setup every number in
-     the paper was produced with; the concurrency fix changes the planner's trajectories, so runs
+     the paper was produced with; the concurrency fix can change the planner's trajectories, so runs
      with it applied are not directly comparable to the paper's numbers.
 2. Set `RPENT_DIR`, `RPENT_ENV`, `PLANNER_ENV`, `TRAIN_ENV`, `PI05_CHECKPOINT` and `SAM3_CHECKPOINT` as described at the
    top of `harnesses/rpent_libero/harness.yaml`.
