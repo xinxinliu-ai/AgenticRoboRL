@@ -159,6 +159,13 @@ tests/                             no GPU, simulator or network needed
 2. Set `RPENT_DIR`, `RPENT_ENV`, `PLANNER_ENV`, `TRAIN_ENV`, `PI05_CHECKPOINT` and `SAM3_CHECKPOINT` as described at the
    top of `harnesses/rpent_libero/harness.yaml`.
 
+> [!NOTE]
+> A fresh install needs two post-install fixes before anything will run:
+> `sam3` 0.1.4 ships without a vocabulary file it loads at startup, and
+> liberopro's floor-mounted robots crash robosuite 1.5.2 during environment
+> creation. Both affect every user and every `libero_object_*` cell; the
+> copy-paste fixes are in [docs/install_known_issues.md](docs/install_known_issues.md).
+
 ### CaP-X
 
 Install CaP-X with its LIBERO environment (its `docs/libero-tasks.md`) and set `CAPX_DIR` and `CAPX_PYTHON`.
