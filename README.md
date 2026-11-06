@@ -149,9 +149,10 @@ tests/                             no GPU, simulator or network needed
    `patches/rpent/README.md` for the commands and the checksums):
    - **New experiments (recommended):** apply `rpent_f70d720.patch` **and**
      `rpent_f70d720_concurrency_fix.patch`. The second one backports an upstream bug fix
-     ([RLinf/RPent#150](https://github.com/RLinf/RPent/pull/150)) without which a turn that issues
-     several tool calls at once has all but one of them rejected with `another tool operation is
-     still active`, and the planner spends extra turns recovering.
+     ([RLinf/RPent#150](https://github.com/RLinf/RPent/pull/150)), which serializes a turn's tool
+     calls; without it a turn that issues several tool calls at once has all but one of them
+     rejected with `another tool operation is still active`, and the planner spends extra turns
+     recovering.
    - **Reproducing the paper:** apply `rpent_f70d720.patch` only. This is the setup every number in
      the paper was produced with; the concurrency fix can change the planner's trajectories, so runs
      with it applied are not directly comparable to the paper's numbers.
