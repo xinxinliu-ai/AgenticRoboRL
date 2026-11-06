@@ -17,7 +17,7 @@ Memory handling:
   tool arguments), are replayed (kept in history) but NOT used as training targets.
 
 Usage (rpent env, on the node):
-  RPENT_DIR=<RPent checkout with patches/rpent applied> python sft/rpent/replay_build.py <cell dir> <out_dir> <episode key>
+  RPENT_DIR=<RPent checkout with the patches in patches/rpent/ applied; see README.md> python sft/rpent/replay_build.py <cell dir> <out_dir> <episode key>
 Writes <out_dir>/<episode key>.json with {"meta", "system_prompt", "user_message", "samples": [...]}.
 """
 import asyncio, base64, hashlib, json, os, re, sys, glob, collections

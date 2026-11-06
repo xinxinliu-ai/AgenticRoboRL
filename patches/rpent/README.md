@@ -1,7 +1,7 @@
 # Changes to RPent
 
 `rpent_f70d720.patch` applies to RPent at commit `f70d720` and gives the RPent code all evaluations of the paper used
-(8 files, +303 / -9 lines). The planner's tools and RPent's control loop are not changed.
+(8 files, +303 / -9 lines). This patch does not change the planner's tools or RPent's control loop.
 
 ```bash
 git clone https://github.com/RLinf/RPent.git && cd RPent
@@ -23,7 +23,7 @@ That recording is not part of this patch.
 
 sha256 of `rpent_f70d720.patch`: `74380a09251aa42f516457b1f410415d7d7cd1aee84d661886c164e18b0860b7`
 
-## Optional: concurrency fix (upstream PR #150 backport)
+## Recommended for new experiments: concurrency fix (upstream PR #150 backport)
 
 RPent at `f70d720` rejects overlapping tool calls: when the planner issues several tool calls in one
 turn, the toolkit's single-operation lock fails all but one of them with `another tool operation is
@@ -33,15 +33,20 @@ calls at the caller side. `rpent_f70d720_concurrency_fix.patch` backports that f
 (2 files, +9 / -4 lines; the source changes are line-identical to the upstream fix, only the
 insertion point of one keyword argument differs so the patch applies cleanly here).
 
-Apply it (optionally) on bare `f70d720`, or on top of `rpent_f70d720.patch`:
+It applies on bare `f70d720` as well as on top of `rpent_f70d720.patch`, in either order. Both
+patches together — the setup recommended for new experiments:
 
 ```bash
+git clone https://github.com/RLinf/RPent.git && cd RPent
+git checkout f70d720
+git apply /path/to/AgenticRoboRL/patches/rpent/rpent_f70d720.patch
 git apply /path/to/AgenticRoboRL/patches/rpent/rpent_f70d720_concurrency_fix.patch
+git add -A && git write-tree        # c2cc16ec990cbacc506220b58ef5c7212d70e787
 ```
 
 **Note on reproducibility:** every number in the paper (evaluations and RL training) was produced
 WITHOUT this fix, i.e. with the concurrency bug present — the planner's recovery turns after a
-rejected call are part of the recorded trajectories. To reproduce the paper exactly, do not apply
-this patch. To run new experiments without the spurious failures, apply it.
+rejected call are part of the recorded trajectories. To use the setup those numbers were produced
+with, do not apply this patch. To run new experiments without the spurious failures, apply it.
 
 sha256 of `rpent_f70d720_concurrency_fix.patch`: `5b81f9e8acb5ce18ec76513eb97dbb35269499be1cba70aa1c909cd8b614a97e`

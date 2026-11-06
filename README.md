@@ -113,7 +113,8 @@ teacher_rewrite/                   removing references to teacher-only memory fr
 harnesses/
   minimal/                         a toy harness with a fake model server and trainer: the whole loop on a laptop
   rpent_libero/  capx_libero/      the two harnesses of the paper
-patches/rpent/                     our changes to RPent (planner switches, the `proven` knowledge profile, verdict fields)
+patches/rpent/                     our changes to RPent (planner switches, `proven` profile, verdict fields), and a
+                                   backport of the upstream concurrency fix
 assets/                            images used by this README
 tests/                             no GPU, simulator or network needed
 ```
@@ -133,7 +134,7 @@ tests/                             no GPU, simulator or network needed
 
 | Variable | Harness | Meaning |
 |---|---|---|
-| `RPENT_DIR` | RPent | an RPent checkout at `f70d720` with `patches/rpent/rpent_f70d720.patch` applied |
+| `RPENT_DIR` | RPent | an RPent checkout at `f70d720` with the patches in `patches/rpent/` applied (see below) |
 | `RPENT_ENV` | RPent | RPent's Python environment (with LIBERO-PRO) |
 | `PI05_CHECKPOINT` | RPent | the frozen VLA (RLinf-Pi05-LIBERO-130-fullshot-SFT) |
 | `SAM3_CHECKPOINT` | RPent | `sam3.pt` |
@@ -144,7 +145,17 @@ tests/                             no GPU, simulator or network needed
 
 ### RPent
 
-1. Clone RPent, check out `f70d720`, and apply `patches/rpent/rpent_f70d720.patch` (see `patches/rpent/README.md`).
+1. Clone RPent and check out `f70d720`, then apply the patches in `patches/rpent/` (see
+   `patches/rpent/README.md` for the commands and the checksums):
+   - **New experiments (recommended):** apply `rpent_f70d720.patch` **and**
+     `rpent_f70d720_concurrency_fix.patch`. The second one backports an upstream bug fix
+     ([RLinf/RPent#150](https://github.com/RLinf/RPent/pull/150)), which serializes a turn's tool
+     calls; without it a turn that issues several tool calls at once has all but one of them
+     rejected with `another tool operation is still active`, and the planner spends extra turns
+     recovering.
+   - **Reproducing the paper:** apply `rpent_f70d720.patch` only. This is the setup every number in
+     the paper was produced with; the concurrency fix can change the planner's trajectories, so runs
+     with it applied are not directly comparable to the paper's numbers.
 2. Set `RPENT_DIR`, `RPENT_ENV`, `PLANNER_ENV`, `TRAIN_ENV`, `PI05_CHECKPOINT` and `SAM3_CHECKPOINT` as described at the
    top of `harnesses/rpent_libero/harness.yaml`.
 
